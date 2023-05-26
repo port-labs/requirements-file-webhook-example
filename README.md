@@ -3,7 +3,7 @@
 
 ## Getting started
 
-In this example you will create a blueprint for `package` entity that ingests all third party dependencies in your requirements.txt file using a combination of REST API and Webhook. You will then relate this `package` blueprint to a `service` blueprint, allowing you to display all the packages used by a service. Also, you will add some script to transform your requirements file into a format required by the webhook (which is mostly JSON Array for the `dependencies` property). Finally, you will configure your Gitlab to create/update your entities in Port every time a GitLab CI is triggered by a schedule.
+In this example you will create a blueprint for `package` entity that ingests all third party dependencies in your requirements.txt file using a combination of REST API and Webhook. You will then relate this `package` blueprint to a `service` blueprint, allowing you to display all the packages used by a service. Also, you will add some script to transform your requirements file into a format required by the webhook (which is mostly JSON Array for the `dependencies` property). Finally, you will configure your Gitlab to create/update your entities in Port every time a deployment is made to a specified branch such as main/dev.
 
 ## Service Blueprint
 Create the service blueprint in Port [using this json file](./resources/service.md)
@@ -25,13 +25,8 @@ To interact with Port using Gitlab CI Pipeline, you will first need to define yo
 The list of the required variables to run this pipeline are:
 - `SERVICE_ID`
 - `WEBHOOK_URL`
-- `PATH_TO_PACKAGE_JSON_FILE`
-
-### Schedule the script
-1. Go to your Gitlab project and select CI/CD
-2. Click on **Schedules** and create new schedule
-3. Enter the necessary information into the form: the Description, Interval Pattern, Timezone, Target branch and other variables specifically for the schedule.
-4. Click on **Save pipeline schedule** 
+- `PATH_TO_REQUIREMENTS_TXT_FILE`
+ 
 
 ### Package Entity Created
 ![Package Entity Created](./assets/packages.PNG "Package Entity Created")

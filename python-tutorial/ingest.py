@@ -98,5 +98,6 @@ def convert_requirements_txt(requirements_txt_path):
 
     return converted_data
 
-converted_data = convert_requirements_txt(PATH_TO_REQUIREMENTS_TXT_FILE)
-print(converted_data)
+entity_object = convert_requirements_txt(PATH_TO_REQUIREMENTS_TXT_FILE)
+webhook_response = add_entity_to_port(entity_object)
+print(webhook_response)
