@@ -12,7 +12,6 @@ ingest_requirements_to_port_job:
   only:
     - main
     - dev
-    - requirements
   before_script:
     - apt-get update
     - apt-get install -y curl jq
