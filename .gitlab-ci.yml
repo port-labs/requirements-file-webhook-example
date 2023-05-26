@@ -1,0 +1,21 @@
+variables:
+  WEBHOOK_URL: $WEBHOOK_URL
+  SERVICE_ID: $SERVICE_ID
+  PATH_TO_REQUIREMENTS_TXT_FILE: $PATH_TO_REQUIREMENTS_TXT_FILE
+
+stages:
+  - build
+
+ingest_requirements_to_port_job:
+  image: ubuntu:latest
+  stage: build
+  only:
+    - main
+    - dev
+    - requirements
+  before_script:
+    - apt-get update
+    - apt-get install -y curl jq
+  script:
+    - echo "Uploading Requirements to Port"
+    - sh ingest.sh

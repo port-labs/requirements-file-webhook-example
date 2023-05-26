@@ -1,0 +1,21 @@
+variables:
+  WEBHOOK_URL: $WEBHOOK_URL
+  SERVICE_ID: $SERVICE_ID
+  PATH_TO_REQUIREMENTS_TXT_FILE: $PATH_TO_REQUIREMENTS_TXT_FILE
+
+stages:
+  - build
+
+ingest_requirements_to_port_job:
+  stage: build
+  image: python:3.8
+  only:
+    - main
+    - dev
+  before_script:
+    - python -m pip install --upgrade pip
+    - pip install --upgrade setuptools
+    - pip install --no-cache-dir -r requirements.txt
+  script:
+    - echo "Uploading Packages to Port"
+    - python ingest.py
