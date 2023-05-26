@@ -3,7 +3,7 @@
 # Get environment variables
 WEBHOOK_URL="$WEBHOOK_URL"
 SERVICE_ID="$SERVICE_ID"
-PATH_TO_PACKAGE_JSON_FILE="$PATH_TO_PACKAGE_JSON_FILE"
+PATH_TO_REQUIREMENTS_TXT_FILE="$PATH_TO_REQUIREMENTS_TXT_FILE"
 
 add_entity_to_port() {
     local entity_object="$1"
@@ -12,28 +12,29 @@ add_entity_to_port() {
     echo "$response"
 }
 
-# This function takes a package.json file path, converts the "dependencies" property into a 
+# This function takes a requirements.txt file path, converts all the dependencies into a 
 # JSON array using three keys (name, version, and id). It then sends this data to Port
-convert_package_json() {
-    local package_json_path="$1"
-    local data=$(cat "$package_json_path")
-    local dependencies=$(echo "$data" | jq -r '.dependencies // {}')
+convert_requirements_txt() {
+    local requirements_txt_path="$1"
+    local requirements=$(cat "$requirements_txt_path")
 
-    local converted_dependencies=""
+    local dependencies=""
     local index=1
-    while IFS="=" read -r dep_name version; do
-        pkg_id="pkg-$index"
-        converted_dependencies="$converted_dependencies{\"name\":\"$dep_name\",\"version\":\"$version\",\"id\":\"$pkg_id\"},"
-        index=$((index + 1))
-    done <<EOF
-$(echo "$dependencies" | jq -r 'to_entries[] | .key + "=" + .value')
-EOF
+    IFS=$'\n'  # Set IFS to newline to properly handle requirements with spaces
+    for requirement in $(echo "$requirements"); do
+        requirement=$(echo "$requirement" | tr -d '[:space:]')  # Remove whitespace characters
+        if [ -n "$requirement" ]; then
+            name=$(echo "$requirement" | cut -d'=' -f1)
+            version=$(echo "$requirement" | cut -d'=' -f2)
+            pkg_id="pkg-$index"
+            dependencies="$dependencies{\"name\":\"$name\",\"version\":\"$version\",\"id\":\"pkg-$index\",\"zope.interface\":\"$zope.interface\"},"
+            index=$((index + 1))
+        fi
+    done
 
-    local entity_object="{\"service\":\"$SERVICE_ID\",\"dependencies\":[${converted_dependencies%,}]}"
-    echo "$entity_object"
-    local webhook_response=$(add_entity_to_port "$entity_object")
-    echo "$webhook_response"
+    local converted_data="{\"service\":\"$SERVICE_ID\",\"dependencies\":[${dependencies%,}]}"
+    echo "$converted_data"
 }
 
-converted_data=$(convert_package_json "$PATH_TO_PACKAGE_JSON_FILE")
+converted_data=$(convert_requirements_txt "$PATH_TO_REQUIREMENTS_TXT_FILE")
 echo "$converted_data"
