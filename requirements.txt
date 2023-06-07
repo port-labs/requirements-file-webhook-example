@@ -1,6 +1,6 @@
 cachetools==5.2.0
 catboost==1.1.1
-Flask==2.2.2
+Flask==2.2.5
 fonttools==4.33.3
 gevent==22.10.2
 google-api-core==2.8.1
