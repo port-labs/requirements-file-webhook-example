@@ -18,7 +18,7 @@
   "relations": {
     "microservice": {
       "title": "Service",
-      "target": "microservice",
+      "target": "service",
       "required": true,
       "many": false
     }
